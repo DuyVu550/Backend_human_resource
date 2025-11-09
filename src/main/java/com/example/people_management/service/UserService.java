@@ -3,6 +3,8 @@ package com.example.people_management.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.people_management.Entity.User;
@@ -15,10 +17,13 @@ public class UserService {
     private UserRepository userRes;
 
     public User createUser(UserCreationRequest userRequest) {
+        if (userRes.existsByUsername(userRequest.getUsername()))
+            throw new RuntimeException("Existed");
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         User user = new User();
-        user.setUsername(userRequest.getUsername());
-        user.setPassword(userRequest.getPassword());
-        user.setRole(userRequest.getRole());
+        // user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        // user.setRole(userRequest.getRole());
         return userRes.save(user);
     }
 
@@ -27,14 +32,15 @@ public class UserService {
     }
 
     public User getUserInfoById(long user_id) {
-        return userRes.findById(user_id).orElseThrow(() -> new RuntimeException("Not found"));
+        return userRes.findById(user_id).orElseThrow(() -> new RuntimeException("Not found user"));
     }
 
     public User updateUserById(long user_id, UserCreationRequest userRequest) {
         User user = getUserInfoById(user_id);
-        user.setUsername(userRequest.getUsername());
-        user.setPassword(userRequest.getPassword());
-        user.setRole(userRequest.getRole());
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        // user.setRole(userRequest.getRole());
         return userRes.save(user);
     }
 
@@ -42,11 +48,10 @@ public class UserService {
         userRes.deleteById(user_id);
     }
 
-    public boolean CheckLogin(UserCreationRequest userRequest, String password) {
+    public boolean CheckRegister(UserCreationRequest userRequest) {
         List<User> userList = getUserInfo();
         for (User user : userList) {
-            if (user.getPassword().equals(password)
-                    && user.getUsername().equals(userRequest.getUsername())) {
+            if (user.getUsername().equals(userRequest.getUsername())) {
                 return true;
             }
         }

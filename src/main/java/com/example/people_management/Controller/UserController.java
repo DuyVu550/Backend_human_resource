@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.people_management.Entity.User;
+import com.example.people_management.dto.request.ApiRespone;
 import com.example.people_management.dto.request.UserCreationRequest;
 import com.example.people_management.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -23,8 +26,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    User createUser(@RequestBody UserCreationRequest request) {
-        return userService.createUser(request);
+    ApiRespone<User> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiRespone<User> apiRespone = new ApiRespone<>();
+        apiRespone.setResult(userService.createUser(request));
+        return apiRespone;
     }
 
     @GetMapping()
@@ -48,11 +53,15 @@ public class UserController {
         return "User has been deleted";
     }
 
-    @PostMapping("/{password}")
-    String CheckLogin(@RequestBody UserCreationRequest request, @PathVariable("password") String password) {
-        if (userService.CheckLogin(request, password)) {
-            return "Login successfully";
+    @PostMapping("/register")
+    ApiRespone<User> CheckRegister(@RequestBody UserCreationRequest request) {
+        ApiRespone<User> apiResponse = new ApiRespone<>();
+        if (userService.CheckRegister(request)) {
+            apiResponse.setMessage("username existed");
+            return apiResponse;
         }
-        return "Login failed";
+        apiResponse.setMessage("Register successfully");
+        apiResponse.setResult(userService.createUser(request));
+        return apiResponse;
     }
 }
