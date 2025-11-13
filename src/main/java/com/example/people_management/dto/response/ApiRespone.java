@@ -1,4 +1,4 @@
-package com.example.people_management.dto.request;
+package com.example.people_management.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

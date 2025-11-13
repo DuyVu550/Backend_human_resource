@@ -5,14 +5,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.example.people_management.dto.request.ApiRespone;
+import com.example.people_management.dto.response.ApiRespone;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiRespone> handlingRuntimeException(Exception exception) {
         ApiRespone apiRespone = new ApiRespone<>();
-        apiRespone.setMessage(exception.getMessage());
+        apiRespone.setMessage(exception.getLocalizedMessage());
         apiRespone.setCode(1001);
         return ResponseEntity.badRequest().body(apiRespone);
     }

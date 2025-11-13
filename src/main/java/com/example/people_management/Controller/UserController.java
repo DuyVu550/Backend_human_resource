@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.people_management.Entity.User;
-import com.example.people_management.dto.request.ApiRespone;
 import com.example.people_management.dto.request.UserCreationRequest;
+import com.example.people_management.dto.response.ApiRespone;
 import com.example.people_management.service.UserService;
 
 import jakarta.validation.Valid;
