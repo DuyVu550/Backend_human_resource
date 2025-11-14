@@ -21,6 +21,7 @@ public class EmployeeService {
     employees.setAddress(employeeCreationRequest.getAddress());
     employees.setDepartments_id(employeeCreationRequest.getDepartments_id());
     employees.setAvatar(employeeCreationRequest.getAvatar());
+    employees.setSalary_rate(employeeCreationRequest.getSalary_rate());
     return employeeRepository.save(employees);
   }
 
@@ -43,6 +44,7 @@ public class EmployeeService {
     employees.setAddress(employeeCreationRequest.getAddress());
     employees.setDepartments_id(employeeCreationRequest.getDepartments_id());
     employees.setAvatar(employeeCreationRequest.getAvatar());
+    employees.setSalary_rate(employeeCreationRequest.getSalary_rate());
     return employeeRepository.save(employees);
   }
 
