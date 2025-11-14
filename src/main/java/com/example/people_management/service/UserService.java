@@ -20,8 +20,10 @@ public class UserService {
         if (userRes.existsByUsername(userRequest.getUsername()))
             throw new RuntimeException("Existed");
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        User user = User.builder().username(userRequest.getUsername())
-                .password(passwordEncoder.encode(userRequest.getPassword())).role(userRequest.getRole()).build();
+        User user = new User();
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setRole(userRequest.getRole());
         return userRes.save(user);
     }
 
@@ -34,9 +36,11 @@ public class UserService {
     }
 
     public User updateUserById(long user_id, UserCreationRequest userRequest) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        User user = User.builder().username(userRequest.getUsername())
-                .password(passwordEncoder.encode(userRequest.getPassword())).role(userRequest.getRole()).build();
+        User user = getUserInfoById(user_id);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setRole(userRequest.getRole());
         return userRes.save(user);
     }
 
@@ -45,12 +49,6 @@ public class UserService {
     }
 
     public boolean CheckRegister(UserCreationRequest userRequest) {
-        List<User> userList = getUserInfo();
-        for (User user : userList) {
-            if (user.getUsername().equals(userRequest.getUsername())) {
-                return true;
-            }
-        }
-        return false;
+        return userRes.existsByUsername(userRequest.getUsername());
     }
 }
