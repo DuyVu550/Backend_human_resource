@@ -23,40 +23,10 @@ public class User {
     private String username;
     private String password;
     private String role;
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        if (!"Employee".equals(role) || !"HR".equals(role)) {
-            this.role = "HR";
-        }
-        this.role = role;
-    }
-
+    private String name;
+    private int age;
+    private String address;
+    private int departments_id;
+    private String avatar;
+    private double salary_rate;
 }

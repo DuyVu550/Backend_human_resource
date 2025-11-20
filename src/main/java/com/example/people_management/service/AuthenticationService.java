@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.people_management.Entity.User;
 import com.example.people_management.dto.request.AuthenticationRequest;
 import com.example.people_management.dto.request.IntrospectRequest;
 import com.example.people_management.dto.response.AuthenticationResponse;
@@ -51,7 +52,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        var user = userRepository.findByUsername(authenticationRequest.getUsername())
+        User user = userRepository.findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("Not found user"));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());

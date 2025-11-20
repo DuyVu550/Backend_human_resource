@@ -24,6 +24,12 @@ public class UserService {
         user.setUsername(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setRole(userRequest.getRole());
+        user.setName(userRequest.getUsername());
+        user.setAge(userRequest.getAge());
+        user.setAddress(userRequest.getAddress());
+        user.setDepartments_id(userRequest.getDepartments_id());
+        user.setAvatar(userRequest.getAvatar());
+        user.setSalary_rate(userRequest.getSalary_rate());
         return userRes.save(user);
     }
 
@@ -41,6 +47,12 @@ public class UserService {
         user.setUsername(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setRole(userRequest.getRole());
+        user.setName(userRequest.getUsername());
+        user.setAge(userRequest.getAge());
+        user.setAddress(userRequest.getAddress());
+        user.setDepartments_id(userRequest.getDepartments_id());
+        user.setAvatar(userRequest.getAvatar());
+        user.setSalary_rate(userRequest.getSalary_rate());
         return userRes.save(user);
     }
 
