@@ -11,12 +11,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] EndPoint = { "/users", "/auth/login", "/auth/introspect" };
+    private final String[] EndPoint = { "/users", "/auth/login", "/auth/introspect", "/users/register" };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(
-                request -> request.requestMatchers(HttpMethod.POST, EndPoint).permitAll()
+                request -> request.requestMatchers(HttpMethod.POST, EndPoint)
+                        //.requestMatchers(HttpMethod.POST, EndPoint).
+                        .permitAll()
                         .anyRequest()
                         .authenticated());
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

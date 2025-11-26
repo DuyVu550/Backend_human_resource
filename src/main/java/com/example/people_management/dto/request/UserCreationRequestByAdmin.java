@@ -15,13 +15,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreationRequest {
-
+public class UserCreationRequestByAdmin {
     @NotBlank
     @Column(unique = true)
     private String username;
     @Size(min = 8, message = "Password must not under 8 characters")
     private String password;
+    @NotBlank
+    private String role;
     @NotBlank
     @Column(unique = true)
     private String name;
@@ -29,32 +30,10 @@ public class UserCreationRequest {
     private int age;
     @NotBlank
     private String address;
+    @NotBlank
+    private int departments_id;
+    @NotNull
+    @Positive
+    private double salary_rate;
     // private String avatar;
-
-    // public String getUsername() {
-    // return username;
-    // }
-
-    // public void setUsername(String username) {
-    // this.username = username;
-    // }
-
-    // public String getPassword() {
-    // return password;
-    // }
-
-    // public void setPassword(String password) {
-    // this.password = password;
-    // }
-
-    // public String getRole() {
-    // return role;
-    // }
-
-    // public void setRole(String role) {
-    // if (!role.equals("Employee") || !role.equals("HR")) {
-    // this.role = "HR";
-    // }
-    // this.role = role;
-    // }
 }

@@ -1,17 +1,27 @@
 package com.example.people_management.Controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.people_management.Entity.User;
 import com.example.people_management.dto.request.UserCreationRequest;
@@ -26,11 +36,11 @@ import jakarta.validation.Valid;
 public class UserController {
     @Autowired
     private UserService userService;
-
+       
     @PostMapping()
-    ApiRespone<User> createUser(@RequestBody @Valid UserCreationRequest request) {
-        ApiRespone<User> apiRespone = new ApiRespone<>();
-        apiRespone.setResult(userService.createUser(request));
+    ApiRespone<User> createUserRoleEmployee(@ModelAttribute UserCreationRequest request, @RequestParam("avatar") MultipartFile multipartFile) throws IOException {
+        ApiRespone<User> apiRespone = new ApiRespone<>();      
+        apiRespone.setResult(userService.createUserRoleEmployee(request, multipartFile));
         return apiRespone;
     }
 
@@ -56,14 +66,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    ApiRespone<User> CheckRegister(@RequestBody UserCreationRequest request) {
+    ApiRespone<User> CheckRegister(@ModelAttribute @Valid UserCreationRequest request, @RequestParam("avatar") MultipartFile multipartFile) throws IOException{
         ApiRespone<User> apiResponse = new ApiRespone<>();
         if (userService.CheckRegister(request)) {
             apiResponse.setMessage("username existed");
             return apiResponse;
         }
         apiResponse.setMessage("Register successfully");
-        apiResponse.setResult(userService.createUser(request));
+        apiResponse.setResult(userService.createUserRoleEmployee(request, multipartFile));
         return apiResponse;
     }
 }
