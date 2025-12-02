@@ -33,6 +33,7 @@ public class UserService {
         user.setName(userRequest.getName());
         user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
+        user.setRole(userRequest.getRole());
         String fileName = multipartFile.getOriginalFilename();
         Path path = Paths.get(uploadDirectory, fileName);
         Files.write(path, multipartFile.getBytes());
@@ -49,15 +50,16 @@ public class UserService {
     }
 
     public User updateUserByName(String name, UserCreationRequest userRequest) {
-
         User user = userRes.findByUsername(name).orElseThrow(() -> new RuntimeException("Not found user"));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setUsername(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        user.setRole(userRequest.getName());
+        user.setRole(userRequest.getRole());
         user.setName(userRequest.getName());
         user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
+        user.setDepartment_id(userRequest.getDepartment_id());
+        user.setSalary_rate(Double.parseDouble(userRequest.getSalary_rate()));
         return userRes.save(user);
     }
 

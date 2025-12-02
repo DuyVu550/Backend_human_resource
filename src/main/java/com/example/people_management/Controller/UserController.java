@@ -32,7 +32,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    ApiRespone<User> createUserRoleEmployee(@ModelAttribute UserCreationRequest request,
+    ApiRespone<User> createUserRole(@ModelAttribute UserCreationRequest request,
             @RequestParam("avatar") MultipartFile multipartFile) throws IOException {
         ApiRespone<User> apiRespone = new ApiRespone<>();
         apiRespone.setResult(userService.createUserRole(request, multipartFile));
