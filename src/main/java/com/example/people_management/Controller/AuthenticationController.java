@@ -2,6 +2,7 @@ package com.example.people_management.Controller;
 
 import java.text.ParseException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,17 +17,12 @@ import com.example.people_management.dto.response.IntrospectResponse;
 import com.example.people_management.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController {
-    AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @PostMapping("/login")
     ApiRespone<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {

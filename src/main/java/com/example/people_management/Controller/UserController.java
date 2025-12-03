@@ -23,21 +23,15 @@ import com.example.people_management.dto.response.ApiRespone;
 import com.example.people_management.service.UserService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
     @Autowired
     private UserService userService;
-
-    @PostMapping()
-    ApiRespone<User> createUserRole(@ModelAttribute UserCreationRequest request,
-            @RequestParam("avatar") MultipartFile multipartFile) throws IOException {
-        ApiRespone<User> apiRespone = new ApiRespone<>();
-        apiRespone.setResult(userService.createUserRole(request, multipartFile));
-        return apiRespone;
-    }
 
     @GetMapping()
     List<User> getUserInfo() {
@@ -47,6 +41,11 @@ public class UserController {
     @GetMapping("/{user_id}")
     User getUserInfoById(@PathVariable("user_id") long user_id) {
         return userService.getUserInfoById(user_id);
+    }
+
+    @GetMapping("/{name}")
+    User getUserInfoByName(@PathVariable("name") String name) {
+        return userService.getUserByName(name);
     }
 
     @PutMapping("/{name}")
@@ -62,7 +61,7 @@ public class UserController {
 
     @PostMapping("/register")
     ApiRespone<User> CheckRegister(@ModelAttribute @Valid UserCreationRequest request,
-            @RequestParam("avatar") MultipartFile multipartFile) throws IOException {
+            @RequestParam(value = "avatar", required = false) MultipartFile multipartFile) throws IOException {
         ApiRespone<User> apiResponse = new ApiRespone<>();
         if (userService.CheckRegister(request)) {
             apiResponse.setMessage("username existed");

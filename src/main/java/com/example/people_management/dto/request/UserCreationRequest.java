@@ -20,7 +20,6 @@ public class UserCreationRequest {
     private String username;
     @Size(min = 8, message = "Password must not under 8 characters")
     private String password;
-    private String role;
     @NotBlank
     @Column(unique = true)
     private String name;
