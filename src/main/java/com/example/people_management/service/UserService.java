@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,32 +42,44 @@ public class UserService {
         return userRes.save(user);
     }
 
+    @PreAuthorize("hasRole('HR')")
     public List<User> getUserInfo() {
         return userRes.findAll();
     }
 
+    @PostAuthorize("returnObject.username == authentication.name or hasRole('HR')")
     public User getUserByName(String username) {
         return userRes.findByUsername(username).orElseThrow(() -> new RuntimeException("Not found user"));
     }
 
+    @PostAuthorize("returnObject.username == authentication.name or hasRole('HR')")
     public User getUserInfoById(long user_id) {
         return userRes.findById(user_id).orElseThrow(() -> new RuntimeException("Not found user"));
     }
 
-    public User updateUserByName(String name, UserCreationRequest userRequest) {
+    @PostAuthorize("returnObject.username == authentication.name or hasRole('HR')")
+    public User updateUserByName(String name, UserCreationRequest userRequest, MultipartFile multipartFile)
+            throws IOException {
         User user = userRes.findByUsername(name).orElseThrow(() -> new RuntimeException("Not found user"));
         user.setUsername(userRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setName(userRequest.getName());
         user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
-        user.setDepartment_id(userRequest.getDepartment_id());
-        user.setSalary_rate(Double.parseDouble(userRequest.getSalary_rate()));
+        String fileName = multipartFile.getOriginalFilename();
+        Path path = Paths.get(uploadDirectory, fileName);
+        Files.write(path, multipartFile.getBytes());
+        user.setAvatar(fileName);
         return userRes.save(user);
     }
 
+    @PreAuthorize("hasRole('HR')")
     public void DeleteUserbyId(long user_id) {
         userRes.deleteById(user_id);
+    }
+
+    @PreAuthorize("hasRole('HR')")
+    public void DeleteUserbyName(String name) {
+        userRes.deleteByUsername(name);
     }
 
     public boolean CheckRegister(UserCreationRequest userRequest) {

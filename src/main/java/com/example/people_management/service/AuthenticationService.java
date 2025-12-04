@@ -75,7 +75,7 @@ public class AuthenticationService {
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
-                .claim("Scope", buildScope(user))
+                .claim("scope", user.getRole())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jWSObject = new JWSObject(jwsHeader, payload);
@@ -86,13 +86,5 @@ public class AuthenticationService {
             log.error("Failed", e);
             throw new RuntimeException(e);
         }
-    }
-
-    private String buildScope(User user) {
-        StringJoiner stringJoiner = new StringJoiner("");
-        if (!user.getRole().isEmpty()) {
-            stringJoiner.add(user.getRole());
-        }
-        return stringJoiner.toString();
     }
 }
