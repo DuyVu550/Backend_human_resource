@@ -63,7 +63,6 @@ public class UserService {
         User user = userRes.findByUsername(name).orElseThrow(() -> new RuntimeException("Not found user"));
         user.setUsername(userRequest.getUsername());
         user.setName(userRequest.getName());
-        user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
         String fileName = multipartFile.getOriginalFilename();
         Path path = Paths.get(uploadDirectory, fileName);
@@ -85,4 +84,5 @@ public class UserService {
     public boolean CheckRegister(UserCreationRequest userRequest) {
         return userRes.existsByUsername(userRequest.getUsername());
     }
+
 }
