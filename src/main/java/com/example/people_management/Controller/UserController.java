@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.people_management.Entity.User;
 import com.example.people_management.dto.request.UserCreationRequest;
+import com.example.people_management.dto.request.UserUpdatesProfile;
 import com.example.people_management.dto.response.ApiRespone;
 import com.example.people_management.service.UserService;
 
@@ -52,10 +53,10 @@ public class UserController {
         return userService.getUserByName(name);
     }
 
-    @PutMapping("/{name}")
-    User updateUserByName(@PathVariable("name") String name, @ModelAttribute @Valid UserCreationRequest request,
+    @PutMapping("/{username}")
+    User updateUserByName(@PathVariable("username") String username, @ModelAttribute UserUpdatesProfile request,
             @RequestParam(value = "avatar", required = false) MultipartFile multipartFile) throws IOException {
-        return userService.updateUserByName(name, request, multipartFile);
+        return userService.updateUserByName(username, request, multipartFile);
     }
 
     @DeleteMapping("/{user_id}")

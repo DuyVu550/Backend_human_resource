@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.people_management.Entity.User;
 import com.example.people_management.dto.request.UserCreationRequest;
+import com.example.people_management.dto.request.UserUpdatesProfile;
 import com.example.people_management.enums.Role;
 import com.example.people_management.repository.UserRepository;
 
@@ -58,11 +59,12 @@ public class UserService {
     }
 
     @PostAuthorize("returnObject.username == authentication.name or hasRole('HR')")
-    public User updateUserByName(String name, UserCreationRequest userRequest, MultipartFile multipartFile)
+    public User updateUserByName(String name, UserUpdatesProfile userRequest, MultipartFile multipartFile)
             throws IOException {
         User user = userRes.findByUsername(name).orElseThrow(() -> new RuntimeException("Not found user"));
         user.setUsername(userRequest.getUsername());
         user.setName(userRequest.getName());
+        user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
         String fileName = multipartFile.getOriginalFilename();
         Path path = Paths.get(uploadDirectory, fileName);

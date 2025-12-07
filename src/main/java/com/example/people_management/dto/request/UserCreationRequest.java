@@ -15,18 +15,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserCreationRequest {
 
-    @NotBlank
+    @NotBlank(message = "username not null")
     @Column(unique = true)
     private String username;
     @Size(min = 8, message = "Password must not under 8 characters")
     private String password;
-    @NotBlank
-    @Column(unique = true)
+    @NotBlank(message = "name not null")
     private String name;
     @Min(value = 18)
-    private int age;
+    private Integer age;
     private int department_id;
-    @NotBlank
+    @NotBlank(message = "address not null")
     private String address;
     private String salary_rate;
     // private String avatar;
