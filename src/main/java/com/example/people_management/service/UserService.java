@@ -34,10 +34,14 @@ public class UserService {
     public User createUserRole(UserCreationRequest userRequest, MultipartFile multipartFile)
             throws IOException {
         User user = new User();
+        if (!userRequest.getPassword().equals(userRequest.getRepassword())) {
+            throw new RuntimeException("Password not match");
+        }
         user.setUsername(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setEmail(userRequest.getEmail());
         user.setName(userRequest.getName());
-        user.setAge(userRequest.getAge());
+        user.setDob(userRequest.getDob());
         user.setAddress(userRequest.getAddress());
         user.setRole(Role.Employee.name());
         if (!multipartFile.isEmpty()) {
@@ -70,9 +74,15 @@ public class UserService {
     public User updateUserByName(String name, UserUpdatesProfile userRequest, MultipartFile multipartFile)
             throws IOException {
         User user = userRes.findByUsername(name).orElseThrow(() -> new RuntimeException("Not found user"));
+        if (!user.getUsername().equals(userRequest.getUsername())) {
+            if (userRes.existsByUsername(userRequest.getUsername())) {
+                throw new RuntimeException("Username existed");
+            }
+        }
         user.setUsername(userRequest.getUsername());
+        user.setEmail(userRequest.getEmail());
         user.setName(userRequest.getName());
-        user.setAge(userRequest.getAge());
+        user.setDob(userRequest.getDob());
         user.setAddress(userRequest.getAddress());
         if (!multipartFile.isEmpty()) {
             Map uploadResult = cloudinary.uploader().upload(multipartFile.getBytes(),
@@ -96,6 +106,10 @@ public class UserService {
     }
 
     public boolean CheckRegister(UserCreationRequest userRequest) {
+        return userRes.existsByUsername(userRequest.getUsername());
+    }
+
+    public boolean CheckExistUsername(UserUpdatesProfile userRequest) {
         return userRes.existsByUsername(userRequest.getUsername());
     }
 

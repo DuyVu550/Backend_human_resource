@@ -1,5 +1,7 @@
 package com.example.people_management.Configuration;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +32,7 @@ public class ApplicationInitConfig {
                                 passwordEncoder.encode("admin123"))
                         .role(Role.HR.name())
                         .name("Administrator")
-                        .age(30)
+                        .dob(LocalDate.parse("2004-06-01"))
                         .build();
                 userRepository.save(user);
             }
