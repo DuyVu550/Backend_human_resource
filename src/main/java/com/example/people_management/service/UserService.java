@@ -1,18 +1,19 @@
 package com.example.people_management.service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.people_management.Entity.User;
 import com.example.people_management.dto.request.UserCreationRequest;
 import com.example.people_management.dto.request.UserUpdatesProfile;
@@ -25,7 +26,10 @@ public class UserService {
     private UserRepository userRes;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public static String uploadDirectory = "D:/uploads/avatar";
+    @Autowired
+    private Cloudinary cloudinary;
+    @Value("${app.upload-dir}")
+    public String uploadDirectory;
 
     public User createUserRole(UserCreationRequest userRequest, MultipartFile multipartFile)
             throws IOException {
@@ -36,10 +40,14 @@ public class UserService {
         user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
         user.setRole(Role.Employee.name());
-        String fileName = multipartFile.getOriginalFilename();
-        Path path = Paths.get(uploadDirectory, fileName);
-        Files.write(path, multipartFile.getBytes());
-        user.setAvatar(fileName);
+        if (!multipartFile.isEmpty()) {
+            Map uploadResult = cloudinary.uploader().upload(multipartFile.getBytes(),
+                    ObjectUtils.emptyMap());
+            String imageUrl = uploadResult.get("secure_url").toString();
+            user.setAvatar(imageUrl);
+        } else {
+            user.setAvatar(null);
+        }
         return userRes.save(user);
     }
 
@@ -66,10 +74,14 @@ public class UserService {
         user.setName(userRequest.getName());
         user.setAge(userRequest.getAge());
         user.setAddress(userRequest.getAddress());
-        String fileName = multipartFile.getOriginalFilename();
-        Path path = Paths.get(uploadDirectory, fileName);
-        Files.write(path, multipartFile.getBytes());
-        user.setAvatar(fileName);
+        if (!multipartFile.isEmpty()) {
+            Map uploadResult = cloudinary.uploader().upload(multipartFile.getBytes(),
+                    ObjectUtils.emptyMap());
+            String imageUrl = uploadResult.get("secure_url").toString();
+            user.setAvatar(imageUrl);
+        } else {
+            user.setAvatar(null);
+        }
         return userRes.save(user);
     }
 
