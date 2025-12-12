@@ -22,6 +22,7 @@ import com.example.people_management.Entity.User;
 import com.example.people_management.dto.request.UserCreationRequest;
 import com.example.people_management.dto.request.UserUpdatesProfile;
 import com.example.people_management.dto.response.ApiRespone;
+import com.example.people_management.service.AuthenticationService;
 import com.example.people_management.service.UserService;
 
 import jakarta.validation.Valid;
@@ -34,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @GetMapping()
     List<User> getUserInfo() {
@@ -53,10 +56,16 @@ public class UserController {
         return userService.getUserByName(name);
     }
 
-    @PutMapping("/{username}")
-    User updateUserByName(@PathVariable("username") String username, @ModelAttribute UserUpdatesProfile request,
+    @PutMapping("/{name}")
+    ApiRespone<User> updateUser(@PathVariable("name") String name,
+            @ModelAttribute @Valid UserUpdatesProfile userRequest,
             @RequestParam(value = "avatar", required = false) MultipartFile multipartFile) throws IOException {
-        return userService.updateUserByName(username, request, multipartFile);
+        ApiRespone<User> apiResponse = new ApiRespone<>();
+        User user = userService.updateUserByName(name, userRequest, multipartFile);
+        apiResponse.setResult(user);
+        String token = authenticationService.generateToken(user);
+        apiResponse.setToken(token);
+        return apiResponse;
     }
 
     @DeleteMapping("/{user_id}")
@@ -70,11 +79,13 @@ public class UserController {
             @RequestParam(value = "avatar", required = false) MultipartFile multipartFile) throws IOException {
         ApiRespone<User> apiResponse = new ApiRespone<>();
         if (userService.CheckRegister(request)) {
-            apiResponse.setMessage("username existed");
-            return apiResponse;
+            throw new RuntimeException("Username existed");
         }
         apiResponse.setMessage("Register successfully");
-        apiResponse.setResult(userService.createUserRole(request, multipartFile));
+        User user = userService.createUserRole(request, multipartFile);
+        apiResponse.setResult(user);
+        String token = authenticationService.generateToken(user);
+        apiResponse.setToken(token);
         return apiResponse;
     }
 }

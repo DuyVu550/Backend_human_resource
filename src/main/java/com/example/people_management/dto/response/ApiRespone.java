@@ -16,6 +16,7 @@ public class ApiRespone<T> {
     private int code = 1000;
     private String message;
     private T result;
+    private String token;
 
     // public int getCode() {
     // return code;

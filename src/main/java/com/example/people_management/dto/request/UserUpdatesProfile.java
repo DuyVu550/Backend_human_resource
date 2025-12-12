@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserUpdatesProfile {
-    private String username;
     private String email;
     private String name;
     private LocalDate dob;

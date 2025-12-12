@@ -1,6 +1,7 @@
 package com.example.people_management.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,12 @@ public class UserService {
         if (!userRequest.getPassword().equals(userRequest.getRepassword())) {
             throw new RuntimeException("Password not match");
         }
+        if (userRes.existsByEmail(userRequest.getEmail())) {
+            throw new RuntimeException("Email existed");
+        }
+        if (userRequest.getDob().isAfter(LocalDate.now())) {
+            throw new RuntimeException("birthDate must be lower than today");
+        }
         user.setUsername(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setEmail(userRequest.getEmail());
@@ -49,8 +56,6 @@ public class UserService {
                     ObjectUtils.emptyMap());
             String imageUrl = uploadResult.get("secure_url").toString();
             user.setAvatar(imageUrl);
-        } else {
-            user.setAvatar(null);
         }
         return userRes.save(user);
     }
@@ -73,13 +78,13 @@ public class UserService {
     @PostAuthorize("returnObject.username == authentication.name or hasRole('HR')")
     public User updateUserByName(String name, UserUpdatesProfile userRequest, MultipartFile multipartFile)
             throws IOException {
-        User user = userRes.findByUsername(name).orElseThrow(() -> new RuntimeException("Not found user"));
-        if (!user.getUsername().equals(userRequest.getUsername())) {
-            if (userRes.existsByUsername(userRequest.getUsername())) {
-                throw new RuntimeException("Username existed");
+        User user = userRes.findByUsername(name)
+                .orElseThrow(() -> new RuntimeException("Not found user"));
+        if (!user.getEmail().equals(userRequest.getEmail())) {
+            if (userRes.existsByEmail(userRequest.getEmail())) {
+                throw new RuntimeException("Email existed");
             }
         }
-        user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
         user.setName(userRequest.getName());
         user.setDob(userRequest.getDob());
@@ -89,8 +94,6 @@ public class UserService {
                     ObjectUtils.emptyMap());
             String imageUrl = uploadResult.get("secure_url").toString();
             user.setAvatar(imageUrl);
-        } else {
-            user.setAvatar(null);
         }
         return userRes.save(user);
     }
@@ -108,9 +111,4 @@ public class UserService {
     public boolean CheckRegister(UserCreationRequest userRequest) {
         return userRes.existsByUsername(userRequest.getUsername());
     }
-
-    public boolean CheckExistUsername(UserUpdatesProfile userRequest) {
-        return userRes.existsByUsername(userRequest.getUsername());
-    }
-
 }
